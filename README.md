@@ -8,10 +8,7 @@
 
 ## Group Members
 
-- Jackson Goerner (jackson.goerner@monash.edu)
-- Saksham Nagpal (saksham.nagpal@monash.edu)
-- Alexey Ignatiev (alexey.ignatiev@monash.edu)
-- Brendon Taylor (brendon.taylor@monash.edu)
+- Tan Chun Ling (ctan0169@student.monash.edu)
 
 ## Setup
 
