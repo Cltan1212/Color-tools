@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from layer_util import Layer
+from layers import *
 
 class LayerStore(ABC):
 
@@ -45,7 +46,45 @@ class SetLayerStore(LayerStore):
     - special: Invert the colour output.
     """
 
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.layer = None
+        self.previous_layer = None
+
+    def add(self, layer: Layer) -> bool:
+        if self.layer != layer:
+            self.layer = layer
+            return True
+        return False
+    
+    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+        if self.layer is None:
+            return start
+
+        # always applies an inversion of the colours after the layer has been applied
+        elif self.previous_layer is not None:
+            start = self.previous_layer.apply(start, timestamp, x, y)
+
+        return self.layer.apply(start, timestamp, x, y)
+
+    def erase(self, layer: Layer) -> bool:
+        if self.layer != layer:
+            self.layer = None
+            return True
+        return False
+
+    def special(self):
+        # if layer is invert, means apply two invert will result the same effect
+        # -> only apply the previous layer
+        if self.layer is invert:
+            self.layer = self.previous_layer
+            self.previous_layer = None
+            return
+
+        # always applies an inversion of the colours after the layer has been applied
+        elif self.previous_layer is None:
+            self.previous_layer = self.layer
+            self.layer = invert
 
 class AdditiveLayerStore(LayerStore):
     """
