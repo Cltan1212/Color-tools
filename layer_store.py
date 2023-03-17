@@ -1,6 +1,5 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-import math
 
 import layer_util
 from layer_util import Layer
@@ -141,10 +140,6 @@ class AdditiveLayerStore(LayerStore):
         """
 
         # each time called the special method should reverse the queue
-        self.reverse_queue()
-
-    def reverse_queue(self):
-
         capacity = len(self.layers)
         stack = ArrayStack(capacity)
 
@@ -169,7 +164,6 @@ class SequenceLayerStore(LayerStore):
         super().__init__()
 
         self.layers = layer_util.get_layers()
-        self.special_effect = False
 
         # create a Array for the applying status
         self.status = ArraySortedList(len(layer_util.LAYERS))
@@ -181,13 +175,12 @@ class SequenceLayerStore(LayerStore):
 
     def add(self, layer: Layer) -> bool:
 
-        self.status[layer.index] = ListItem[layer.index, "applying"]
-        return True
+        if self.status[layer.index] == ListItem[layer.index, "not applying"]:
+            self.status[layer.index] = ListItem[layer.index, "applying"]
+            return True
+        return False
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
-        """
-        Returns the colour this square should show, given the current layers.
-        """
         color = start
         for i in range(len(self.layers)):
             if self.status[i] == ListItem[i, "applying"]:
@@ -195,13 +188,12 @@ class SequenceLayerStore(LayerStore):
         return color
 
     def erase(self, layer: Layer) -> bool:
-        self.status[layer.index] = ListItem[layer.index, "not applying"]
-        return True
+        if self.status[layer.index] == ListItem[layer.index, "applying"]:
+            self.status[layer.index] = ListItem[layer.index, "not applying"]
+            return True
+        return False
 
     def special(self):
-        """
-        Special mode. Different for each store implementation.
-        """
         for index in range(len(layer_util.LAYERS)):
             if self.status[index] == ListItem[index, "applying"]:
                 self.lexiLayers.add(ListItem(self.layers[index], self.layers[index].name[0]))
@@ -209,7 +201,8 @@ class SequenceLayerStore(LayerStore):
         if len(self.lexiLayers) % 2 == 0:
             median = len(self.lexiLayers)//2 - 1
         else:
-            median = math.floor(len(self.lexiLayers)/2)
+            median = len(self.lexiLayers)//2
+
         self.erase(self.lexiLayers[median].value)
         self.lexiLayers.clear()
 
