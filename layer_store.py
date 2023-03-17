@@ -172,16 +172,16 @@ class SequenceLayerStore(LayerStore):
         self.special_effect = False
 
         # create a Array for the applying status
-        self.status = ArrayR(len(self.layers))
-        for i in range(len(self.layers)):
-            self.status[i] = "not applying"
+        self.status = ArraySortedList(len(layer_util.LAYERS))
+        for i, layer in enumerate(layer_util.LAYERS):
+            self.status[i] = ListItem[i, "not applying"]
 
         # Lexicographic order for special method
-        self.lexiLayers = ArraySortedList(len(self.layers))
+        self.lexiLayers = ArraySortedList(len(layer_util.LAYERS))
 
     def add(self, layer: Layer) -> bool:
 
-        self.status[layer.index] = "applying"
+        self.status[layer.index] = ListItem[layer.index, "applying"]
         return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
@@ -189,21 +189,21 @@ class SequenceLayerStore(LayerStore):
         Returns the colour this square should show, given the current layers.
         """
         color = start
-        for i in range(len(self.status)):
-            if self.status[i] == "applying":
+        for i in range(len(self.layers)):
+            if self.status[i] == ListItem[i, "applying"]:
                 color = self.layers[i].apply(color, timestamp, x, y)
         return color
 
     def erase(self, layer: Layer) -> bool:
-        self.status[layer.index] = "not applying"
+        self.status[layer.index] = ListItem[layer.index, "not applying"]
         return True
 
     def special(self):
         """
         Special mode. Different for each store implementation.
         """
-        for index in range(len(self.layers)):
-            if self.status[index] == "applying":
+        for index in range(len(layer_util.LAYERS)):
+            if self.status[index] == ListItem[index, "applying"]:
                 self.lexiLayers.add(ListItem(self.layers[index], self.layers[index].name[0]))
 
         if len(self.lexiLayers) % 2 == 0:
