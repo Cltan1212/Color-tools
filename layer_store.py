@@ -163,42 +163,51 @@ class SequenceLayerStore(LayerStore):
     def __init__(self) -> None:
         super().__init__()
 
-        self.layers = layer_util.get_layers()
+        self.get_layer = layer_util.get_layers()
+
+        self.capacity = 0
+        for layer in self.get_layer:
+            if layer is not None:
+                self.capacity += 1
+
+        self.layers = ArraySortedList(self.capacity)
 
         # create a Array for the applying status
-        self.status = ArraySortedList(len(layer_util.LAYERS))
         for i, layer in enumerate(layer_util.LAYERS):
-            self.status[i] = ListItem[i, "not applying"]
+            if layer is not None:
+                self.layers[i] = ListItem[i, "not applying"]
 
         # Lexicographic order for special method
-        self.lexiLayers = ArraySortedList(len(layer_util.LAYERS))
+        self.lexiLayers = ArraySortedList(self.capacity)
 
     def add(self, layer: Layer) -> bool:
 
-        if self.status[layer.index] == ListItem[layer.index, "not applying"]:
-            self.status[layer.index] = ListItem[layer.index, "applying"]
+        if self.layers[layer.index] == ListItem[layer.index, "not applying"]:
+            self.layers[layer.index] = ListItem[layer.index, "applying"]
             return True
         return False
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         color = start
-        for i in range(len(self.layers)):
-            if self.status[i] == ListItem[i, "applying"]:
-                color = self.layers[i].apply(color, timestamp, x, y)
+        for i in range(self.capacity):
+            if self.layers[i] == ListItem[i, "applying"]:
+                color = self.get_layer[i].apply(color, timestamp, x, y)
         return color
 
     def erase(self, layer: Layer) -> bool:
-        if self.status[layer.index] == ListItem[layer.index, "applying"]:
-            self.status[layer.index] = ListItem[layer.index, "not applying"]
+        if self.layers[layer.index] == ListItem[layer.index, "applying"]:
+            self.layers[layer.index] = ListItem[layer.index, "not applying"]
             return True
         return False
 
     def special(self):
-        for index in range(len(layer_util.LAYERS)):
-            if self.status[index] == ListItem[index, "applying"]:
-                self.lexiLayers.add(ListItem(self.layers[index], self.layers[index].name[0]))
+        for index in range(self.capacity):
+            if self.layers[index] == ListItem[index, "applying"]:
+                self.lexiLayers.add(ListItem(self.get_layer[index], self.get_layer[index].name[0]))
 
-        if len(self.lexiLayers) % 2 == 0:
+        if len(self.lexiLayers) == 0:
+            return
+        elif len(self.lexiLayers) % 2 == 0:
             median = len(self.lexiLayers)//2 - 1
         else:
             median = len(self.lexiLayers)//2
