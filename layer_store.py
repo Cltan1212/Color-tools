@@ -172,19 +172,15 @@ class SequenceLayerStore(LayerStore):
                 break
             self.capacity += 1
 
-        # create a Array for the applying status
-        self.layers = ArraySortedList(self.capacity)
-        for i, layer in enumerate(layer_util.LAYERS):
-            if layer is not None:
-                self.layers[i] = ListItem[i, "not applying"]
+        self.seq_layer = ArraySortedList(self.capacity)
 
         # Lexicographic order for special method
         self.lexiLayers = ArraySortedList(self.capacity)
 
     def add(self, layer: Layer) -> bool:
 
-        if self.layers[layer.index] == ListItem[layer.index, "not applying"]:
-            self.layers[layer.index] = ListItem[layer.index, "applying"]
+        if ListItem(layer, layer.index) not in self.seq_layer:
+            self.seq_layer.add(ListItem(layer, layer.index))
             return True
         return False
 
@@ -192,26 +188,22 @@ class SequenceLayerStore(LayerStore):
 
         color = start
 
-        # only apply the layer if the status is "applying"
-        for i in range(self.capacity):
-            if self.layers[i] == ListItem[i, "applying"]:
-                color = self.get_layer[i].apply(color, timestamp, x, y)
+        for i in range(len(self.seq_layer)):
+            color = self.seq_layer[i].value.apply(color, timestamp, x, y)
 
         return color
 
     def erase(self, layer: Layer) -> bool:
 
-        if self.layers[layer.index] == ListItem[layer.index, "applying"]:
-            self.layers[layer.index] = ListItem[layer.index, "not applying"]
+        if ListItem(layer, layer.index) in self.seq_layer:
+            self.seq_layer.remove(ListItem(layer, layer.index))
             return True
         return False
 
     def special(self):
 
-        # check the status of "applying" and append into lexiLayers sorted lisf
-        for index in range(self.capacity):
-            if self.layers[index] == ListItem[index, "applying"]:
-                self.lexiLayers.add(ListItem(self.get_layer[index], self.get_layer[index].name[0]))
+        for i in range(len(self.seq_layer)):
+            self.lexiLayers.add(ListItem(self.seq_layer[i].value, self.seq_layer[i].value.name[0]))
 
         # find the median to erase the layer
         if len(self.lexiLayers) == 0:
@@ -221,7 +213,6 @@ class SequenceLayerStore(LayerStore):
         else:
             median = len(self.lexiLayers)//2
 
-        # erase the value to "not applying"
         self.erase(self.lexiLayers[median].value)
         self.lexiLayers.clear()
 

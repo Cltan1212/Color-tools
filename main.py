@@ -346,9 +346,6 @@ class MyWindow(arcade.Window):
     def on_replay_start(self):
         """Called when the replay starting is requested."""
         self.replay_tracker.start_replay()
-        while not self.on_replay_next_step():
-            continue
-        self.on_reset()
 
     def on_replay_next_step(self) -> bool:
         """
