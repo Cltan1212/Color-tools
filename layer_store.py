@@ -179,7 +179,7 @@ class SequenceLayerStore(LayerStore):
 
     def add(self, layer: Layer) -> bool:
 
-        if ListItem(layer, layer.index) not in self.seq_layer:
+        if not self.binary_search(layer):
             self.seq_layer.add(ListItem(layer, layer.index))
             return True
         return False
@@ -195,7 +195,7 @@ class SequenceLayerStore(LayerStore):
 
     def erase(self, layer: Layer) -> bool:
 
-        if ListItem(layer, layer.index) in self.seq_layer:
+        if self.binary_search(layer):
             self.seq_layer.remove(ListItem(layer, layer.index))
             return True
         return False
@@ -215,4 +215,17 @@ class SequenceLayerStore(LayerStore):
 
         self.erase(self.lexiLayers[median].value)
         self.lexiLayers.clear()
+
+    def binary_search(self, layer) -> bool:
+        low = 0
+        high = len(self.seq_layer) - 1
+        while low <= high:
+            mid = (low+high)//2
+            if layer.index == self.seq_layer[mid].key:
+                return True
+            elif layer.index < self.seq_layer[mid].key:
+                high = mid - 1
+            elif layer.index > self.seq_layer[mid].key:
+                low = mid + 1
+        return False
 
