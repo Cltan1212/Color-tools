@@ -40,8 +40,7 @@ class Grid:
         self.x = x
         self.y = y
 
-        # set up grid
-        # self.grid = ArrayR(y * ArrayR(x))
+        # set up grid with 2D array
         self.grid = ArrayR(x)
         for i in range(x):
             self.grid[i] = ArrayR(y)
@@ -85,4 +84,7 @@ class Grid:
                 layer_store.special()
 
     def __getitem__(self, x):
+        """
+        Return each layerStore inside grid squares.
+        """
         return self.grid[x]

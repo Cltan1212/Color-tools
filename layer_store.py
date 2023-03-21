@@ -43,6 +43,7 @@ class LayerStore(ABC):
         """
         pass
 
+
 class SetLayerStore(LayerStore):
     """
     Set layer store. A single layer can be stored at a time (or nothing at all)
@@ -52,34 +53,52 @@ class SetLayerStore(LayerStore):
     """
 
     def __init__(self) -> None:
+        """
+        Initialise the attributes of SetLayerStore.
+        - layer: Layer that be stored for apply.
+        - special_effect: Keep track when called special method.
+        """
+
         super().__init__()
         self.layer = None
         self.special_effect = False
 
     def add(self, layer: Layer) -> bool:
+        """
+        Add a layer to the store.
+        Returns true if the LayerStore was actually changed.
+        """
+
         if self.layer != layer:
             self.layer = layer
             return True
         return False
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
-        if self.layer is None:
-            color = start
-        else:
+        """
+        Returns the colour this square should show, given the current layer.
+        """
+
+        color = start
+
+        if self.layer is not None:
             color = self.layer.apply(start, timestamp, x, y)
 
+        # always applies an inversion of the colours after the layer has been applied
         if self.special_effect:
             color = invert.apply(color, timestamp, x, y)
+
         return color
 
     def erase(self, layer: Layer) -> bool:
+
         if self.layer is None:
             return False
         self.layer = None
         return True
 
     def special(self):
-        if self.special_effect is True:
+        if self.special_effect:
             self.special_effect = False
         else:
             self.special_effect = True
@@ -217,6 +236,7 @@ class SequenceLayerStore(LayerStore):
         self.lexiLayers.clear()
 
     def binary_search(self, layer) -> bool:
+
         low = 0
         high = len(self.seq_layer) - 1
         while low <= high:
