@@ -27,7 +27,10 @@ class Grid:
             This draw style determines the LayerStore used on each grid square.
         - x, y: The dimensions of the grid.
 
-        Should also intialise the brush size to the DEFAULT provided as a class variable.
+        Should also initialise the brush size to the DEFAULT provided as a class variable.
+
+        Time Complexity:
+        - O(x * y): where x and y is the dimensions of the grid.
         """
         # check condition
         if draw_style not in Grid.DRAW_STYLE_OPTIONS:
@@ -62,6 +65,9 @@ class Grid:
         Increases the size of the brush by 1,
         if the brush size is already MAX_BRUSH,
         then do nothing.
+
+        Time Complexity:
+        - O(1): since all the operation are constant (comparison, assignment and operation)
         """
         if self.brush_size < Grid.MAX_BRUSH:
             self.brush_size += 1
@@ -71,6 +77,9 @@ class Grid:
         Decreases the size of the brush by 1,
         if the brush size is already MIN_BRUSH,
         then do nothing.
+
+        Time Complexity:
+        - O(1): since all the operation are constant (comparison, assignment and operation)
         """
         if self.brush_size > Grid.MIN_BRUSH:
             self.brush_size -= 1
@@ -78,6 +87,9 @@ class Grid:
     def special(self):
         """
         Activate the special effect on all grid squares.
+
+        Time Complexity:
+        - O(x * y): where x and y is the dimensions of the grid.
         """
         for row in self.grid:
             for layer_store in row:
@@ -86,5 +98,8 @@ class Grid:
     def __getitem__(self, x):
         """
         Return each layerStore inside grid squares.
+
+        Time Complexity:
+        - O(y): where y is the dimension of the grid.
         """
         return self.grid[x]
