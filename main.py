@@ -303,9 +303,13 @@ class MyWindow(arcade.Window):
         Called when a grid square is clicked on, which should trigger painting in the vicinity.
         Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y) can be safely ignored.
 
-        layer: The layer being applied.
-        px: x position of the brush.
-        py: y position of the brush.
+        Parameter:
+            layer: The layer being applied.
+            px: x position of the brush.
+            py: y position of the brush.
+
+        Time Complexity:
+
         """
         brush_size = self.grid.brush_size + 1
         x_start = max(0, px - brush_size)
@@ -323,34 +327,62 @@ class MyWindow(arcade.Window):
         self.undo_tracker.add_action(paint_action)
         self.replay_tracker.add_action(paint_action)
 
+        self.undo_tracker.reset_redo()
+
     def on_undo(self):
-        """Called when an undo is requested."""
+        """
+        Called when an undo is requested.
+
+        Time Complexity:
+            O(comp+) where comp+ is depended on the number of paintAction needed to undo
+        """
         paint_action = self.undo_tracker.undo(self.grid)
         if paint_action is not None:
             self.replay_tracker.add_action(paint_action, True)
 
     def on_redo(self):
-        """Called when a redo is requested."""
+        """
+        Called when a redo is requested.
+
+        Time Complexity:
+            O(comp+) where comp+ is depended on the number of paintAction needed to redo
+        """
         paint_action = self.undo_tracker.redo(self.grid)
         if paint_action is not None:
             self.replay_tracker.add_action(paint_action)
 
     def on_special(self):
-        """Called when the special action is requested."""
-        paint_action = PaintAction()
+        """
+        Called when the special action is requested.
+
+        Time Complexity:
+            O(x*y): while x and y is the dimension of the grid
+        """
         self.grid.special()
+
+        # add the special action to the undo and replay tracker
+        paint_action = PaintAction()
         paint_action.is_special = True
         self.undo_tracker.add_action(paint_action)
         self.replay_tracker.add_action(paint_action)
 
     def on_replay_start(self):
-        """Called when the replay starting is requested."""
+        """
+        Called when the replay starting is requested.
+
+        Time Complexity:
+            O(1): since all the operations are constant
+        """
         self.replay_tracker.start_replay()
 
     def on_replay_next_step(self) -> bool:
         """
         Called when the next step of the replay is requested.
+
         Returns whether the replay is finished.
+
+        Time Complexity:
+
         """
         return self.replay_tracker.play_next_action(self.grid)
 
