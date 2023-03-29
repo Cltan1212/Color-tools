@@ -21,7 +21,7 @@ class ReplayTracker:
     def __init__(self):
         """
         Time Complexity：
-            O(1): Constant for all operation
+            O(capacity): where capacity is the size of circular queue
         """
         self.capacity = 10000
         self.actions = CircularQueue(self.capacity)
@@ -48,7 +48,7 @@ class ReplayTracker:
                             Special, Redo, and Draw all have this is False.
 
         Time Complexity:
-            O(1): constant
+            O(1): constant since append method is constant
         """
         self.actions.append((action, is_undo))
 
@@ -64,8 +64,9 @@ class ReplayTracker:
             - Otherwise, return False.
 
         Time Complexity:
-            Best Case: O(1) if nothing to be replayed
-            Worse Case:
+            Worst Case: O(function) where function is either undo or redo (the time complexity of undo and redo is
+            depended on the paintStep inside paintAction
+            Best Case: same as worst case
         """
         # when not calling the replay
         if not self.start:

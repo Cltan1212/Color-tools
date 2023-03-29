@@ -290,12 +290,24 @@ class MyWindow(arcade.Window):
     # STUDENT PART
 
     def on_init(self):
-        """Initialisation that occurs after the system initialisation."""
+        """
+        Initialisation that occurs after the system initialisation.
+
+        Time Complexity:
+            Worst Case: O(1) since the operation inside constructor of UndoTracker and ReplayTracker are constant
+            Best Case: O(1) same as worst case
+        """
         self.undo_tracker = UndoTracker()
         self.replay_tracker = ReplayTracker()
 
     def on_reset(self):
-        """Called when a window reset is requested."""
+        """
+        Called when a window reset is requested.
+
+        Time Complexity:
+             Worst Case: O(1) since the time complexity of method of on_init are constant
+            Best Case: O(1) same as worst case
+        """
         self.on_init()
 
     def on_paint(self, layer: Layer, px, py):
@@ -309,24 +321,33 @@ class MyWindow(arcade.Window):
             py: y position of the brush.
 
         Time Complexity:
-
+            Worst Case: O(X * Y) where X and Y are the dimension of the grid
+            Best Case: same as worst case
         """
+        # Manhattan distance
         brush_size = self.grid.brush_size + 1
+
+        # size for painting
         x_start = max(0, px - brush_size)
         x_end = min(px + brush_size, self.grid.x)
         y_start = max(0, py - brush_size)
         y_end = min(py + brush_size, self.grid.y)
 
+        # create an instance of paintAction
         paint_action = PaintAction()
+
+        # paint all grid squares within Manhattan distance
         for x in range(x_start, x_end):
             for y in range(y_start, y_end):
-                if abs(x - px) + abs(y - py) <= self.grid.brush_size:
-                    if self.grid[x][y].add(layer):
-                        paint_action.add_step(PaintStep((x,y),layer))
+                if abs(x - px) + abs(y - py) <= self.grid.brush_size:  # Manhattan distance
+                    if self.grid[x][y].add(layer):  # only add the paint step if it was actually add the layer
+                        paint_action.add_step(PaintStep((x, y), layer))
 
+        # add the action to undo action
         self.undo_tracker.add_action(paint_action)
         self.replay_tracker.add_action(paint_action)
 
+        # clear the undone action -> since we finish the action
         self.undo_tracker.reset_redo()
 
     def on_undo(self):
@@ -334,9 +355,13 @@ class MyWindow(arcade.Window):
         Called when an undo is requested.
 
         Time Complexity:
-            O(comp+) where comp+ is depended on the number of paintAction needed to undo
+            Worst case: O(undo) where undo depended on the time complexity of method undo apply
+            (which is the size of paint step inside paint action)
+            Best case: same as worst case
         """
         paint_action = self.undo_tracker.undo(self.grid)
+
+        # only add the action if it is not None
         if paint_action is not None:
             self.replay_tracker.add_action(paint_action, True)
 
@@ -345,9 +370,13 @@ class MyWindow(arcade.Window):
         Called when a redo is requested.
 
         Time Complexity:
-            O(comp+) where comp+ is depended on the number of paintAction needed to redo
+            Worst Case: O(redo) where redo depended on the time complexity of method redo apply
+            (which is the size of paint step inside paint action)
+            Best case: same as worst case
         """
         paint_action = self.undo_tracker.redo(self.grid)
+
+        # only add the action if it is not None
         if paint_action is not None:
             self.replay_tracker.add_action(paint_action)
 
@@ -356,13 +385,16 @@ class MyWindow(arcade.Window):
         Called when the special action is requested.
 
         Time Complexity:
-            O(x*y): while x and y is the dimension of the grid
+            Worst Case: O(x * y): while x and y is the dimension of the grid
+            (which is the complexity of special method isnide grid)
+            Best Case: same as worst case
         """
+        # activate the special method inside grid
         self.grid.special()
 
         # add the special action to the undo and replay tracker
-        paint_action = PaintAction()
-        paint_action.is_special = True
+        # is_special indicate whether it will trigger the corresponding special method
+        paint_action = PaintAction([], is_special=True)
         self.undo_tracker.add_action(paint_action)
         self.replay_tracker.add_action(paint_action)
 
@@ -371,7 +403,8 @@ class MyWindow(arcade.Window):
         Called when the replay starting is requested.
 
         Time Complexity:
-            O(1): since all the operations are constant
+            Worst Case: O(1): since the method start replay is constant
+            Best Case: same as worst case
         """
         self.replay_tracker.start_replay()
 
@@ -382,16 +415,30 @@ class MyWindow(arcade.Window):
         Returns whether the replay is finished.
 
         Time Complexity:
-
+            Worst Case: O(function) where time complexity of the function play next function is either undo or redo
+            (the time complexity of undo and redo is depended on the paintStep inside paintAction)
+            Best Case: same as worst case
         """
         return self.replay_tracker.play_next_action(self.grid)
 
     def on_increase_brush_size(self):
-        """Called when an increase to the brush size is requested."""
+        """
+        Called when an increase to the brush size is requested.
+
+        Time Complexity:
+            Worst Case: O(1) since the time complexity of increase brush size is constant
+            Best Case: same as worst case
+        """
         self.grid.increase_brush_size()
 
     def on_decrease_brush_size(self):
-        """Called when a decrease to the brush size is requested."""
+        """
+        Called when a decrease to the brush size is requested.
+
+        Time Complexity:
+            Worst Case: O(1) since the time complexity of decrease brush size is constant
+            Best Case: same as worst case
+        """
         self.grid.decrease_brush_size()
 
 def main():

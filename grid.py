@@ -29,8 +29,12 @@ class Grid:
 
         Should also initialise the brush size to the DEFAULT provided as a class variable.
 
+        Raise:
+        - Exception: if the draw style is not in draw_style_options
+
         Time Complexity:
-        - O(x * y): where x and y is the dimensions of the grid.
+        - Worst Case: O(x * y): where x and y is the dimensions of the grid.
+        - Best Case: O(x * y): same as worst case since we need to create space for array
         """
         # check condition
         if draw_style not in Grid.DRAW_STYLE_OPTIONS:
@@ -67,7 +71,8 @@ class Grid:
         then do nothing.
 
         Time Complexity:
-        - O(1): since all the operation are constant (comparison, assignment and operation)
+        - Worst Case: O(1) since all the operation are constant (comparison, assignment and operation)
+        - Best Case: same as Worst Case
         """
         if self.brush_size < Grid.MAX_BRUSH:
             self.brush_size += 1
@@ -79,7 +84,8 @@ class Grid:
         then do nothing.
 
         Time Complexity:
-        - O(1): since all the operation are constant (comparison, assignment and operation)
+        - Worst case: O(1) since all the operation are constant (comparison, assignment and operation)
+        - Best case: same as Worst Case
         """
         if self.brush_size > Grid.MIN_BRUSH:
             self.brush_size -= 1
@@ -89,7 +95,8 @@ class Grid:
         Activate the special effect on all grid squares.
 
         Time Complexity:
-        - O(x * y): where x and y is the dimensions of the grid.
+        - Worst Case: O(x * y * special): where x and y is the dimensions of the grid and special is the complexity of each layerStore
+        - Best Case: O(x * y * special): same as worst case
         """
         for row in self.grid:
             for layer_store in row:
@@ -100,6 +107,6 @@ class Grid:
         Return each layerStore inside grid squares.
 
         Time Complexity:
-        - O(y): where y is the dimension of the grid.
+        - O(1): get item in a particular place in array
         """
         return self.grid[x]

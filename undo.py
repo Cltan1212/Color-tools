@@ -21,7 +21,7 @@ class UndoTracker:
     def __init__(self):
         """
         Time complexity:
-            O(1): constant.
+            O(capacity): where capacity is the size to create array stack
         """
         self.capacity = 10000  # the maximum number of actions does not exceed 10000
         self.actions = ArrayStack(self.capacity)
@@ -57,15 +57,20 @@ class UndoTracker:
             The action that was undone, or None.
 
         Time Complexity:
-            Best Case: O(1) when there is no action in the collection
+            Worst Case: O(undo_apply) where undo depended on the time complexity of method undo apply
+            (which is the size of paint step inside paint action)
+            Best Case: same as worst case
         """
         if self.actions.is_empty():
             return None
 
         else:
+            # get the action from the stack and undo the action
             current_action = self.actions.pop()
             current_action.undo_apply(grid)
-            self.undone_actions.push(current_action)  # add to undone actions for redo
+
+            # add to undone actions for redo
+            self.undone_actions.push(current_action)
             return current_action
 
     def redo(self, grid: Grid) -> PaintAction|None:
@@ -80,16 +85,20 @@ class UndoTracker:
             The action that was redone, or None.
 
         Time Complexity:
-            Best Case: O(1) if there is no action inside undoneActions
-            Worse Case: O()
+            Worst Case: O(redo) where redo depended on the time complexity of method redo apply
+            (which is the size of paint step inside paint action)
+            Best Case: same as worst case
         """
         if self.undone_actions.is_empty():
             return None
 
         else:
+            # get the action from the stack and redo the action
             current_action = self.undone_actions.pop()
             current_action.redo_apply(grid)
-            self.actions.push(current_action)  # add to actions for undo
+
+            # add to actions for undo
+            self.actions.push(current_action)
             return current_action
 
     def reset_redo(self):
@@ -97,6 +106,6 @@ class UndoTracker:
         Reset the undone_actions.
 
         Time Complexity:
-            O(1): constant
+            O(1): constant since clear method is constant
         """
-        self.undone_actions = ArrayStack(self.capacity)
+        self.undone_actions.clear()

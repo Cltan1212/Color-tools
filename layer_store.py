@@ -65,7 +65,8 @@ class SetLayerStore(LayerStore):
         Initialise the attributes of SetLayerStore.
 
         Time Complexity:
-            O(1): since there is nothing in parent class's constructor and assignments
+            Worst Case: O(1) since there is nothing in parent class's constructor and assignments
+            Best Case: O(1) same as Worst Case
         """
 
         super().__init__()
@@ -83,7 +84,8 @@ class SetLayerStore(LayerStore):
             boolean: Returns true if the layer was actually added.
 
         Time Complexity:
-            O(1): comparison and assignment
+            Worst Case: O(1) constant since there are comparison and assignment
+            Best Case: O(1) same as worst case
         """
 
         if self.layer != layer:  # simply check if the layer is already stored
@@ -104,8 +106,8 @@ class SetLayerStore(LayerStore):
             color (tuple): the colour this square should show.
 
         Time Complexity:
-            Best Case: O(1) if there is no layer to be applied
-            Worse Case: O(N) where N depends on the function of layer that should be applied.
+            Worst Case: O(apply) where apply is the time complexity of the apply method
+            Best Case: same as worst case
         """
 
         color = start
@@ -131,7 +133,8 @@ class SetLayerStore(LayerStore):
             boolean: Returns true if the layer was actually removed.
 
         Time Complexity:
-            O(1): Constant since there is only comparison, assignment and return statement.
+            Worse Case: O(1) Constant since there is only comparison, assignment and return statement.
+            Best Case: same as Worst Case
         """
 
         if self.layer is None:  # simply check if the layer is empty
@@ -144,7 +147,8 @@ class SetLayerStore(LayerStore):
         Special mode tracker. Change special effect status whenever call the special method.
 
         Time Complexity:
-            O(1): Constant for all operations.
+            Worst Case: O(1) Constant for all operations.
+            Best Case: Same as Worst Case
         """
         if self.special_effect:
             self.special_effect = False
@@ -171,10 +175,10 @@ class AdditiveLayerStore(LayerStore):
          Initialise the attributes of AdditiveLayerStore.
 
         Time Complexity:
-        - O(N): while N is the capacity of the Circular Queue.
+        - O(capacity): while capacity is the capacity of the Circular Queue.
         """
         super().__init__()
-        self.capacity = 100  # the capacity of the store at least 100 times the number of layers.
+        self.capacity = 9 * 100  # the capacity of the store at least 100 times the number of layers.
         self.layers = CircularQueue(self.capacity)
 
     def add(self, layer: Layer) -> bool:
@@ -188,8 +192,8 @@ class AdditiveLayerStore(LayerStore):
             Boolean: Returns true if the LayerStore was actually changed.
 
         Time Complexity:
-            O(1): since the time complexity of is_full, append is O(1),
-            therefore the overall time complexity should be constant as well.
+            Worst Case: O(1) since the time complexity of is_full, append is O(1),
+            Best Case: same as worst case
         """
 
         # only append if the layerStore is not full
@@ -212,9 +216,9 @@ class AdditiveLayerStore(LayerStore):
             color (tuple): the colour this square should show.
 
         Time Complexity:
-            Best Case: O(1) if the layerStore is empty.
-            Worse Case: O(N * comp+) where N is the number of layers in LayerStore and
-            comp+ is depended on the function of the layer applied.
+            Worse Case: O(N * apply) where N is the number of layers in LayerStore and apply is the time complexity of
+            apply method (serve and append are all O(1)
+            Best Case: same as worst case
         """
         color = start
 
@@ -241,7 +245,8 @@ class AdditiveLayerStore(LayerStore):
             boolean: Returns true if the layer was actually removed.
 
         Time Complexity:
-            O(1): Constant since the method is_empty and serve are both constant.
+            Worst Case: O(1) Constant since the method is_empty and serve are both constant.
+            Best Case: same as worst case
         """
 
         # only applied if there is a layer inside layerStore
@@ -254,8 +259,8 @@ class AdditiveLayerStore(LayerStore):
         Special mode. Reverse the order of current layers.
 
         Time Complexity:
-            Best Case: O(1) when there is no layers inside layerStore.
-            Worse Case: O(N) where N is the layers inside layerStore.
+            Worst Case: O(N) where N is the layers inside layerStore.
+            Best Case: same as worst case
         """
 
         # each time called the special method should reverse the queue
@@ -296,7 +301,8 @@ class SequenceLayerStore(LayerStore):
         Initialise the attributes of SequenceLayerStore.
 
         Time Complexity:
-            - O(N) where N is the number of layers registered.
+            Worst Case: O(get_layers) where get_layers is the time complexity of the method
+            Best Case: same as worst case
         """
         super().__init__()
         self.get_layers = layer_util.get_layers()
@@ -313,7 +319,8 @@ class SequenceLayerStore(LayerStore):
             Boolean: Returns true if the LayerStore was actually changed.
 
         Time Complexity:
-            O(1): since all the operation are constant.
+            Worst Case: O(1) since all the operation are constant (including add method in set).
+            Best Case: same as worst case
         """
 
         # simply add the layer into layerStore if it is not inside it
@@ -335,8 +342,8 @@ class SequenceLayerStore(LayerStore):
             color (tuple): the colour this square should show.
 
         Time Complexity:
-            Best Case: O(1) if the layerStore is empty.
-            Worse Case: O(N) where N is depended on the layer to be applied.
+            Worst Case: O(capacity * apply) since always iterate the same time (capacity is a constant)
+            Best Case: same as worst case
         """
         color = start
 
@@ -360,7 +367,8 @@ class SequenceLayerStore(LayerStore):
             boolean: Returns true if the layer was actually removed.
 
         Time Complexity:
-            O(1): Constant since the method is_empty and serve are both constant.
+            Worst Case: O(1) Constant since the method is_empty and serve are both constant.
+            Best Case: O(1) same as worst case
         """
 
         # only remove if the layer is inside layerStore
@@ -374,9 +382,9 @@ class SequenceLayerStore(LayerStore):
         Special mode. Of all currently applied layers, remove the one with median `name`.
 
         Time Complexity:
-            Best Case: O(1) when there is nothing inside layerStore
-            Worse Case: O(X * log(Y)) where X is the size of the lexi_layers(since we have to resize the array)
-            and Y is the total layers to be added into ArraySortedList
+            Worst Case: O(capacity * add) where capacity is the CAPACITY of sequence layer store, add is the method
+            of adding elements into set (basically the time complexity is O(1)
+            Best Case: same as worst case
         """
         # an ArraySortedList that stored the applied layers in lexicographically ordered
         lexi_layers = ArraySortedList(SequenceLayerStore.CAPACITY)
