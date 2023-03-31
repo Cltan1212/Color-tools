@@ -22,6 +22,9 @@ class ReplayTracker:
         """
         Time Complexity：
             O(capacity): where capacity is the size of circular queue
+
+        Explanation of time complexity:
+            line 30: the time complexity of creating a queue depends on the size the capacity
         """
         self.capacity = 10000
         self.actions = CircularQueue(self.capacity)
@@ -35,6 +38,9 @@ class ReplayTracker:
 
         Time Complexity:
             O(1): constant
+
+        Explanation of time complexity:
+            line 45: the time complexity of assignment is constant
         """
         self.start = True
 
@@ -49,6 +55,9 @@ class ReplayTracker:
 
         Time Complexity:
             O(1): constant since append method is constant
+
+        Explanation of time complexity:
+            line 62: the time complexity of append in queue is constant
         """
         self.actions.append((action, is_undo))
 
@@ -67,6 +76,12 @@ class ReplayTracker:
             Worst Case: O(function) where function is either undo or redo (the time complexity of undo and redo is
             depended on the paintStep inside paintAction
             Best Case: same as worst case
+
+        Explanation of time complexity:
+            line 87, 91, 95, 99, 103: the time complexity of comparison is constant
+            line 91, 96: the time complexity of is_empty, serve in queue are constant
+            line 100, 104: the time complexity depends on the function undo_apply or redo_apply
+            line 88, 93, 106: the time complexity of return statements are constant
         """
         # when not calling the replay
         if not self.start:

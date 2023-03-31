@@ -294,8 +294,13 @@ class MyWindow(arcade.Window):
         Initialisation that occurs after the system initialisation.
 
         Time Complexity:
-            Worst Case: O(1) since the operation inside constructor of UndoTracker and ReplayTracker are constant
-            Best Case: O(1) same as worst case
+            Worst Case: O(capacity) since the time complexity inside constructor of UndoTracker and ReplayTracker is
+            based on the size of capacity
+            Best Case: O(capacity) same as worst case
+
+        Explanation of time complexity:
+            the time complexity depends on the constructor inside undo tracker and replay tracker, and the time
+            complexity of these two constructor are both constant, therefore the time complexity is constant
         """
         self.undo_tracker = UndoTracker()
         self.replay_tracker = ReplayTracker()
@@ -305,8 +310,12 @@ class MyWindow(arcade.Window):
         Called when a window reset is requested.
 
         Time Complexity:
-             Worst Case: O(1) since the time complexity of method of on_init are constant
-            Best Case: O(1) same as worst case
+             Worst Case: O(capacity) since the time complexity of method of on_init are constant
+            Best Case: O(capacity) same as worst case
+
+        Explanation of time complexity:
+            since this method called another method, therefore the time complexity depends on the method on_init which
+            has a time complexity of O(capacity)
         """
         self.on_init()
 
@@ -323,6 +332,15 @@ class MyWindow(arcade.Window):
         Time Complexity:
             Worst Case: O(X * Y) where X and Y are the dimension of the grid
             Best Case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of assignment, max, min, comparison are both constant
+            - the time complexity of create a paintAction object depends on the constructor of paintAction
+            - the time complexity of two for loop is O(X * Y) where X and Y are the dimension of the grid
+            (loop through X*Y times)
+            - the time complexity of adding layer, adding step (append into the list) are both constant
+            - the time complexity of add_action in both undo_tracker and replay_tracker are constant
+            - the time complexity of reset_redo is constant
         """
         # Manhattan distance
         brush_size = self.grid.brush_size + 1
@@ -358,6 +376,10 @@ class MyWindow(arcade.Window):
             Worst case: O(undo) where undo depended on the time complexity of method undo apply
             (which is the size of paint step inside paint action)
             Best case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of undo depends on the function itself (which is undo apply)
+            - the time complexity of comparison and add_action are both constant
         """
         paint_action = self.undo_tracker.undo(self.grid)
 
@@ -373,6 +395,10 @@ class MyWindow(arcade.Window):
             Worst Case: O(redo) where redo depended on the time complexity of method redo apply
             (which is the size of paint step inside paint action)
             Best case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of redo depends on the function itself (which is redo apply)
+            - the time complexity of comparison and add_action are both constant
         """
         paint_action = self.undo_tracker.redo(self.grid)
 
@@ -385,9 +411,13 @@ class MyWindow(arcade.Window):
         Called when the special action is requested.
 
         Time Complexity:
-            Worst Case: O(x * y): while x and y is the dimension of the grid
-            (which is the complexity of special method isnide grid)
+            Worst Case: O(x * y * special): the time complexity is the same as the method special inside grid class
             Best Case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of calling grid's special method is O(x * y * special)
+            - the time complexity of creating a paintAction, adding action into undo tracker and replay tracker are
+            both O(1)
         """
         # activate the special method inside grid
         self.grid.special()
@@ -405,6 +435,9 @@ class MyWindow(arcade.Window):
         Time Complexity:
             Worst Case: O(1): since the method start replay is constant
             Best Case: same as worst case
+
+        Explanation of time complexity;
+            - the time complexity depends on the time complexity of start replay, which is constant
         """
         self.replay_tracker.start_replay()
 
@@ -418,6 +451,10 @@ class MyWindow(arcade.Window):
             Worst Case: O(function) where time complexity of the function play next function is either undo or redo
             (the time complexity of undo and redo is depended on the paintStep inside paintAction)
             Best Case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of play_next_action depends on the function inside method (either undo or redo)
+            - the time complexity of return statement is constant
         """
         return self.replay_tracker.play_next_action(self.grid)
 
@@ -428,6 +465,9 @@ class MyWindow(arcade.Window):
         Time Complexity:
             Worst Case: O(1) since the time complexity of increase brush size is constant
             Best Case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of increase brush size is constant
         """
         self.grid.increase_brush_size()
 
@@ -438,6 +478,9 @@ class MyWindow(arcade.Window):
         Time Complexity:
             Worst Case: O(1) since the time complexity of decrease brush size is constant
             Best Case: same as worst case
+
+        Explanation of time complexity:
+            - the time complexity of decrease brush size is constant
         """
         self.grid.decrease_brush_size()
 

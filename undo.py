@@ -22,6 +22,9 @@ class UndoTracker:
         """
         Time complexity:
             O(capacity): where capacity is the size to create array stack
+
+        Explanation of time complexity:
+            line 30, 31: the time complexity of creating an arrayStack depends on the capacity
         """
         self.capacity = 10000  # the maximum number of actions does not exceed 10000
         self.actions = ArrayStack(self.capacity)
@@ -39,6 +42,10 @@ class UndoTracker:
 
         Time Complexity:
             O(1): the method is_full and push are all constant
+
+        Explanation of time complexity:
+            line 52: the time complexity of is_full and comparison are constant
+            line 53: the time complexity of pushing an item into the stack is constant
         """
 
         # push the action if the collection is not full
@@ -59,7 +66,13 @@ class UndoTracker:
         Time Complexity:
             Worst Case: O(undo_apply) where undo depended on the time complexity of method undo apply
             (which is the size of paint step inside paint action)
-            Best Case: same as worst case
+            Best Case: O(1) if the actions is empty
+
+        Explanation of time complexity:
+            line 77: the time complexity of comparison is constant
+            line 77, 82, 86: the time complexity of is_empty, pop and push in stack ADT are all constant
+            line 83: the time complexity of undo_apply depends on the function undo_apply
+            line 78, 87: the time complexity of return statements are constant
         """
         if self.actions.is_empty():
             return None
@@ -87,7 +100,13 @@ class UndoTracker:
         Time Complexity:
             Worst Case: O(redo) where redo depended on the time complexity of method redo apply
             (which is the size of paint step inside paint action)
-            Best Case: same as worst case
+            Best Case: O(1) if the size of undone action is empty
+
+        Explanation of time complexity:
+            line 111: the time complexity of comparison is constant
+            line 111, 116, 120: the time complexity of is_empty, pop and push in stack ADT are all constant
+            line 117: the time complexity of undo_apply depends on the function redo_apply
+            line 112, 121: the time complexity of return statements are constant
         """
         if self.undone_actions.is_empty():
             return None
@@ -107,5 +126,8 @@ class UndoTracker:
 
         Time Complexity:
             O(1): constant since clear method is constant
+
+        Explanation of time complexity:
+            line 133: the time complexity of clear a stack is constant
         """
         self.undone_actions.clear()
