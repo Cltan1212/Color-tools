@@ -307,8 +307,8 @@ class AdditiveLayerStore(LayerStore):
             Best Case: same as worst case
 
         Explanation of time complexity:
-            line 317: the time complexity of create an array stack depends on the size of layerStore -> O(len(self.layers))
-            line 320 - 321, 324 - 325: the time complexity of while loop depends on the time complexity of the size of layerStore
+            line 317: create an array stack depends on the size of layerStore -> O(len(self.layers))
+            line 320,321, 324,325: while loop depends on the time complexity of the size of layerStore
             line 320 -325: the time complexity of is_empty, push, pop and append is constant
         """
 
@@ -354,7 +354,7 @@ class SequenceLayerStore(LayerStore):
             line 360: the time complexity of get_layers
             line 364 - 368: the time complexity if the length of get_layers (we need to loop through all layer inside)
             line 363, 366, 367: the time complexity of assignment, comparison and arithmetic operation are constant
-            line 370: the time complexity of create a set is constant (here it creates an array size of 1 -> min_capacity)
+            line 370: create a set is constant (here it creates an array size of 1 -> min_capacity)
         """
         super().__init__()
         self.get_layers = get_layers()
