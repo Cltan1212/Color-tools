@@ -21,11 +21,11 @@ class Grid:
     def __init__(self, draw_style, x, y) -> None:
         """
         Initialise the grid object.
-        - draw_style:
+        - draw_style (String):
             The style with which colours will be drawn.
             Should be one of DRAW_STYLE_OPTIONS
             This draw style determines the LayerStore used on each grid square.
-        - x, y: The dimensions of the grid.
+        - x, y (int) : The dimensions of the grid.
 
         Should also initialise the brush size to the DEFAULT provided as a class variable.
 

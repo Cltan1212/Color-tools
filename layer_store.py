@@ -48,7 +48,7 @@ class LayerStore(ABC):
 
 class SetLayerStore(LayerStore):
     """
-    Set layer store. A single layer can be stored at a time (or nothing at all)
+    Set layer store. A single layer can be stored at a time (or nothing at all). Inherited from LayerStore Class.
 
     Attributes:
         layer (Layer): Layer that be stored for apply.
@@ -179,7 +179,7 @@ class SetLayerStore(LayerStore):
 
 class AdditiveLayerStore(LayerStore):
     """
-    Additive layer store. Each added layer applies after all previous ones.
+    Additive layer store. Each added layer applies after all previous ones. v
 
     Attributes:
         capacity (int): maximum number of layers to be stored
@@ -344,7 +344,7 @@ class SequenceLayerStore(LayerStore):
 
     def __init__(self) -> None:
         """
-        Initialise the attributes of SequenceLayerStore.
+        Initialise the attributes of SequenceLayerStore. Inherited from LayerStore Class.
 
         Time Complexity:
             Worst Case: O(get_layers) where get_layers is the time complexity of the method
